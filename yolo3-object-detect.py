@@ -11,30 +11,30 @@ with open("coco.names", "r") as f:
 
 # Set input and output layers
 layer_names = net.getLayerNames()
-output_layers = [layer_names[i- 1] for i in net.getUnconnectedOutLayers()]
+output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 
 # Open video stream
-# cap = cv2.VideoCapture("rtsp://admin:bjxy2021@192.168.1.51:554/Streaming/Channels/101")
+cap = cv2.VideoCapture(
+    "rtsp://admin:bjxy2021@192.168.1.51:554/Streaming/Channels/101")
 # cap = cv2.VideoCapture("rtsp://127.0.0.1:8554/test")
 # cap = cv2.VideoCapture("rtsp://192.168.100.123:8554/test")
 # cap = cv2.VideoCapture("rtsp://10.0.0.26:554/222")
 # cap = cv2.VideoCapture("rtsp://10.0.0.22:554/1")
-cap = cv2.VideoCapture("rtsp://192.168.1.228:8554/t0")
+# cap = cv2.VideoCapture("rtsp://192.168.1.228:8554/t0")
 
 
 # cap = cv2.VideoCapture("rtsp://10.0.0.243:8554/czc")
 
 
-
 # Initialize variables
 count = 0
-frame_count=0
+frame_count = 0
 
 while True:
     # Read frame from video stream
     ret, frame = cap.read()
-    frame_count+=1
-    
+    frame_count += 1
+
     if frame_count % 30 == 0:
 
         if ret:
@@ -42,7 +42,8 @@ while True:
             frame = cv2.resize(frame, None, fx=0.4, fy=0.4)
 
             # Convert frame to blob
-            blob = cv2.dnn.blobFromImage(frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
+            blob = cv2.dnn.blobFromImage(
+                frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
 
             # Set input to network
             net.setInput(blob)
@@ -87,9 +88,11 @@ while True:
                 top = box[1]
                 width = box[2]
                 height = box[3]
-                cv2.rectangle(frame, (left, top), (left + width, top + height), (0, 255, 0), 2)
+                cv2.rectangle(frame, (left, top), (left + width,
+                              top + height), (0, 255, 0), 2)
                 label = f"{classes[class_ids[i]]}: {confidences[i]:.2f}"
-                cv2.putText(frame, label, (left, top - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                cv2.putText(frame, label, (left, top - 5),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
 
             # Display frame
             cv2.imshow("Object detection", frame)

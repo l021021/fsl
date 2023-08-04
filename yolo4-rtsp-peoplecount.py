@@ -11,7 +11,9 @@ layer_names = net.getLayerNames()
 output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 
 # 打开 RTSP 视频流
-cap = cv2.VideoCapture("rtsp://192.168.1.228:8554/t0")
+# cap = cv2.VideoCapture("rtsp://192.168.1.228:8554/t0")
+cap = cv2.VideoCapture(
+    "rtsp://admin:Bjxy+2023ZYH@192.168.100.48:554/Streaming/Channels/1201")
 
 # 循环读取视频帧并进行检测
 while True:
@@ -21,7 +23,8 @@ while True:
         break
 
     # 对视频帧进行预处理
-    blob = cv2.dnn.blobFromImage(frame, 1/255.0, (416, 416), swapRB=True, crop=False)
+    blob = cv2.dnn.blobFromImage(
+        frame, 1/255.0, (416, 416), swapRB=True, crop=False)
 
     # 将预处理后的帧输入到 YOLOv4 模型中进行检测
     net.setInput(blob)
@@ -46,18 +49,18 @@ while True:
                 class_ids.append(class_id)
                 confidences.append(float(confidence))
                 boxes.append([x, y, w, h])
-                #label each box with the confidence level
-                cv2.putText(frame, str(round(confidence,2)), (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1) 
-
+                # label each box with the confidence level
+                cv2.putText(frame, str(round(confidence, 2)), (x, y - 5),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
 
     # 显示检测结果
     num_people = len(boxes)
     for i in range(num_people):
         x, y, w, h = boxes[i]
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-    #delete the overlapping boxes   
+    # delete the overlapping boxes
     for i in range(num_people):
-        for j in range(i+1,num_people):
+        for j in range(i+1, num_people):
             if boxes[i][0] < boxes[j][0] + boxes[j][2] and boxes[i][0] + boxes[i][2] > boxes[j][0] and boxes[i][1] < boxes[j][1] + boxes[j][3] and boxes[i][1] + boxes[i][3] > boxes[j][1]:
                 if confidences[i] > confidences[j]:
                     boxes[j][0] = 0
@@ -69,8 +72,9 @@ while True:
                     boxes[i][1] = 0
                     boxes[i][2] = 0
                     boxes[i][3] = 0
-    
-    cv2.putText(frame, f"Number of people: {num_people}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+    cv2.putText(frame, f"Number of people: {num_people}",
+                (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
     # 显示视频帧
     cv2.imshow("Frame", frame)

@@ -11,12 +11,13 @@ with open("coco.names", "r") as f:
 
 # Set input and output layers
 layer_names = net.getLayerNames()
-output_layers = [layer_names[i- 1] for i in net.getUnconnectedOutLayers()]
+output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 
 # Open video stream
-# cap = cv2.VideoCapture("rtsp://admin:Bjxy+2023ZYH@192.168.100.48:554/Streaming/Channels/1201")
+cap = cv2.VideoCapture(
+    "rtsp://admin:Bjxy+2023ZYH@192.168.100.48:554/Streaming/Channels/1201")
 # cap = cv2.VideoCapture("rtsp://127.0.0.1:8554/test1")
-cap = cv2.VideoCapture("rtsp://192.168.1.228:8554/t0")
+# cap = cv2.VideoCapture("rtsp://192.168.1.228:8554/t0")
 
 
 # Initialize variables
@@ -30,7 +31,7 @@ while True:
 
     frame_count += 1
 
-     # Check if it's time to detect people
+    # Check if it's time to detect people
     if frame_count % 30 == 0:
 
         if ret:
@@ -38,7 +39,8 @@ while True:
             frame = cv2.resize(frame, None, fx=0.7, fy=0.7)
 
             # Convert frame to blob
-            blob = cv2.dnn.blobFromImage(frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
+            blob = cv2.dnn.blobFromImage(
+                frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
 
             # Set input to network
             net.setInput(blob)
@@ -59,7 +61,7 @@ while True:
                     confidence = scores[class_id]
 
                     # Check if detection is a person
-                    if classes[class_id] == "person": #and confidence > 0:
+                    if classes[class_id] == "person":  # and confidence > 0:
                         # Get bounding box coordinates
                         center_x = int(detection[0] * frame.shape[1])
                         center_y = int(detection[1] * frame.shape[0])
@@ -79,7 +81,7 @@ while True:
             # Count people
             count = len(indices)
             if count >= 30:
-            #退出循环
+                # 退出循环
                 print("人数超过3人")
                 break
 
@@ -92,12 +94,13 @@ while True:
                 w = box[2]
                 h = box[3]
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            cv2.putText(frame, f"People count: {count}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            cv2.putText(
+                frame, f"People count: {count}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
             # Show frame
         cv2.imshow("People counting", frame)
 
-            # Check if count has changed
+        # Check if count has changed
         if count != prev_count:
             print(f"People count: {count}")
 
