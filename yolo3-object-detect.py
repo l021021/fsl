@@ -14,13 +14,14 @@ layer_names = net.getLayerNames()
 output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 
 # Open video stream
-cap = cv2.VideoCapture(
-    "rtsp://admin:bjxy2021@192.168.1.51:554/Streaming/Channels/101")
+# cap = cv2.VideoCapture(
+#     "rtsp://admin:bjxy2021@192.168.1.50:554/Streaming/Channels/101")
 # cap = cv2.VideoCapture("rtsp://127.0.0.1:8554/test")
 # cap = cv2.VideoCapture("rtsp://192.168.100.123:8554/test")
 # cap = cv2.VideoCapture("rtsp://10.0.0.26:554/222")
 # cap = cv2.VideoCapture("rtsp://10.0.0.22:554/1")
 # cap = cv2.VideoCapture("rtsp://192.168.1.228:8554/t0")
+cap = cv2.VideoCapture(0)
 
 
 # cap = cv2.VideoCapture("rtsp://10.0.0.243:8554/czc")
